@@ -129,6 +129,7 @@
     <module>overlord-commons-uiheader</module>
     <module>overlord-commons-dist</module>
     <module>overlord-commons-solder-impl</module>
+    <module>overlord-commons-test</module>
   </modules>
 
   <build>
@@ -434,7 +435,16 @@
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
-   
+      <dependency>
+	<groupId>org.seleniumhq.selenium</groupId>
+	<artifactId>selenium-java</artifactId>
+	<version>2.42.2</version>
+      </dependency>
+         	 <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+              <version>6.8.8</version>
+        </dependency>  
     </dependencies>
   </dependencyManagement>
 
