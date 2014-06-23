@@ -48,10 +48,30 @@
         </exclusion>
       </exclusions>
     </dependency>
-	 <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-        </dependency>      
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+		</dependency>
+   		<dependency>
+			<groupId>org.jboss.arquillian.protocol</groupId>
+			<artifactId>arquillian-protocol-servlet</artifactId>
+		</dependency>  
+		
+		<dependency>
+			<groupId>org.jboss.arquillian.extension</groupId>
+			<artifactId>arquillian-drone-webdriver-depchain</artifactId>
+			<type>pom</type>
+		</dependency>	
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>		
+<dependency>
+    <groupId>org.jboss.arquillian.graphene</groupId>
+    <artifactId>graphene-webdriver</artifactId>
+    <version>2.0.0.Final</version>
+    <type>pom</type>
+</dependency>				
   </dependencies>
 
   <build>

@@ -1,29 +1,23 @@
-package org.overlord.commons.test.ui.cases;
+package org.overlord.commons.test.ui.pages;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
+import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.overlord.commons.test.ui.SuiteConstants;
 import org.overlord.commons.test.ui.SuiteProperties;
 
-public abstract class AbstractTestCase {
+public abstract class AbstractPage {
+
+    @Drone
     protected WebDriver driver;
 
     private String baseUrl;
 
 
-    public AbstractTestCase(WebDriver browser) {
-        this.driver = browser;
-    }
-
-    public WebDriver getDriver() {
-        return driver;
-    }
-
-    public void setDriver(WebDriver driver) {
-        this.driver = driver;
+    public AbstractPage() {
     }
 
     public String getBaseUrl() {
@@ -51,5 +45,14 @@ public abstract class AbstractTestCase {
           return false;
         }
       }
+
+    public WebDriver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(WebDriver driver) {
+        this.driver = driver;
+    }
+
 }
 
