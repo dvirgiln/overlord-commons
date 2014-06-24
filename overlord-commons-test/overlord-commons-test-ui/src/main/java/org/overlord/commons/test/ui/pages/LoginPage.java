@@ -1,6 +1,5 @@
 package org.overlord.commons.test.ui.pages;
 
-import static org.junit.Assert.assertEquals;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
@@ -26,12 +25,12 @@ public class LoginPage extends AbstractPage {
 
     }
 
+
     public boolean login() throws Exception {
-        driver.get(super.getBaseUrl());
         user.sendKeys((String) SuiteProperties.getProperty(SuiteConstants.USERNAME));
         password.sendKeys((String) SuiteProperties.getProperty(SuiteConstants.PASSWORD));
         loginButton.click();
-        assertEquals(SuiteProperties.getProperty(SuiteConstants.USERNAME),
+        Assert.assertEquals(SuiteProperties.getProperty(SuiteConstants.USERNAME),
                 driver.findElement(By.cssSelector("span.overlord-nav-username.overlord-header-username"))
                         .getText());
         return true;

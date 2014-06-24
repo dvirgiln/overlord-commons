@@ -1,39 +1,17 @@
 package org.overlord.commons.test.ui.pages;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.lang.StringUtils;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
-import org.overlord.commons.test.ui.SuiteConstants;
-import org.overlord.commons.test.ui.SuiteProperties;
 
 public abstract class AbstractPage {
 
     @Drone
     protected WebDriver driver;
 
-    private String baseUrl;
-
 
     public AbstractPage() {
-    }
-
-    public String getBaseUrl() {
-        if (StringUtils.isBlank(baseUrl)) {
-            try {
-                baseUrl = (String) SuiteProperties.getProperty(SuiteConstants.BASE_URL);
-            } catch (ConfigurationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        return baseUrl;
-    }
-
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
     }
 
 

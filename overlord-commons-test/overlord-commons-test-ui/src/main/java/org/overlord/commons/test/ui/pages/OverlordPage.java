@@ -1,8 +1,9 @@
 package org.overlord.commons.test.ui.pages;
 
-import static org.junit.Assert.assertEquals;
+
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Assert;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.overlord.commons.test.ui.SuiteConstants;
@@ -17,24 +18,29 @@ public class OverlordPage extends AbstractPage {
 
     protected String username;
 
-    public OverlordPage() throws ConfigurationException {
+    public OverlordPage() {
         super();
-        username = (String) SuiteProperties.getProperty(SuiteConstants.USERNAME);
+        try {
+            username = (String) SuiteProperties.getProperty(SuiteConstants.USERNAME);
+        } catch (ConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 
-    public void logout() {
+    public void logout(String baseUrl) {
 
         logout_header.click();
         logout_link.click();
 
         /* TO BE REMOVED WHEN THE LOGOUT REDIRECT CORRECTLY TO LOGIN PAGE */
 
-        driver.get(super.getBaseUrl());
+        driver.get(baseUrl);
     }
 
     public void assertLogoutButton() {
-        assertEquals(username, logout_header.getText());
+        Assert.assertEquals(username, logout_header.getText());
     }
 
     public String getUsername() {
