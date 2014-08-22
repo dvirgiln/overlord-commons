@@ -37,6 +37,8 @@ public class AbstractMessages {
     private static Map<String, ResourceBundle> bundles = new HashMap<String, ResourceBundle>();
 
     private Class<? extends AbstractMessages> clazz;
+
+    private String packageName;
     private static ThreadLocal<Locale> tlocale = new ThreadLocal<Locale>();
     public static void setLocale(Locale locale) {
         tlocale.set(locale);
@@ -52,6 +54,12 @@ public class AbstractMessages {
         clazz = c;
     }
 
+    /**
+     * Constructor.
+     */
+    public AbstractMessages(String packageName) {
+        this.packageName = packageName;
+    }
     /**
      * Gets a bundle.  First tries to find one in the cache, then loads it if
      * it can't find one.
@@ -73,7 +81,11 @@ public class AbstractMessages {
      */
     private String getBundleKey() {
         Locale locale = getLocale();
-        return clazz.getName() + "::" + locale.toString(); //$NON-NLS-1$
+        if (clazz != null) {
+            return clazz.getName() + "::" + locale.toString(); //$NON-NLS-1$
+        } else {
+            return packageName + ".messages::" + locale.toString();
+        }
     }
 
     /**
@@ -81,14 +93,24 @@ public class AbstractMessages {
      * @param c
      */
     private ResourceBundle loadBundle() {
-        String pkg = clazz.getPackage().getName();
+        String pkg = getPackage();
         Locale locale = getLocale();
-        return PropertyResourceBundle.getBundle(pkg + ".messages", locale, clazz.getClassLoader(), new ResourceBundle.Control() { //$NON-NLS-1$
-            @Override
-            public List<String> getFormats(String baseName) {
-                return FORMATS;
-            }
-        });
+        if (clazz != null) {
+            return PropertyResourceBundle.getBundle(pkg + ".messages", locale, clazz.getClassLoader(), new ResourceBundle.Control() { //$NON-NLS-1$
+                        @Override
+                        public List<String> getFormats(String baseName) {
+                            return FORMATS;
+                        }
+                    });
+        } else {
+            return PropertyResourceBundle.getBundle(pkg + ".messages", locale, new ResourceBundle.Control() { //$NON-NLS-1$
+                        @Override
+                        public List<String> getFormats(String baseName) {
+                            return FORMATS;
+                        }
+                    });
+        }
+
     }
 
     /**
@@ -119,4 +141,12 @@ public class AbstractMessages {
         }
     }
 
+
+    private String getPackage() {
+        if (clazz != null) {
+            return clazz.getPackage().getName();
+        } else {
+            return packageName;
+        }
+    }
 }

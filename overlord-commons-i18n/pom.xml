@@ -15,6 +15,10 @@
       <artifactId>jboss-servlet-api_3.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-services</artifactId>
+    </dependency>    
   </dependencies>
 
   <build>
@@ -29,11 +33,12 @@
             <Bundle-Name>${project.name}</Bundle-Name>
             <Bundle-Version>${project.version}</Bundle-Version>
             <Export-Package>
-              org.overlord.commons.gwt.server.filters
+              org.overlord.commons.i18n
             </Export-Package>
             <Import-Package>
               javax.servlet,
-              javax.servlet.http
+              javax.servlet.http,
+              org.overlord.commons.services
             </Import-Package>
           </instructions>
         </configuration>
