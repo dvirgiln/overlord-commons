@@ -41,7 +41,7 @@ import java.util.zip.ZipFile;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.osgi.framework.Bundle;
-import org.overlord.commons.osgi.Messages;
+import org.overlord.commons.i18n.Messages;
 
 /**
  * A representation of an OSGi bundle as a vfs file.
@@ -50,9 +50,11 @@ import org.overlord.commons.osgi.Messages;
  */
 public class VfsBundle {
 
-    private File vfsBundleDir;
-    private File vfsBundleIndexFile;
-    private Map<String, File> index = new HashMap<String, File>();
+    private final static Messages messages = Messages.getInstance();
+
+    private final File vfsBundleDir;
+    private final File vfsBundleIndexFile;
+    private final Map<String, File> index = new HashMap<String, File>();
 
     /**
      * Constructor.
@@ -178,7 +180,7 @@ public class VfsBundle {
     }
 
     /**
-     * Writes the index 
+     * Writes the index
      */
     private void writeIndex() {
         Properties props = new Properties();
@@ -189,7 +191,7 @@ public class VfsBundle {
         Writer writer = null;
         try {
             writer = new FileWriter(vfsBundleIndexFile);
-            props.store(writer, Messages.getString("VfsBundle.GeneratedBundleIndex")); //$NON-NLS-1$
+            props.store(writer, messages.format("VfsBundle.GeneratedBundleIndex")); //$NON-NLS-1$
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -225,7 +227,7 @@ public class VfsBundle {
     private File getOrCreateVfsBundleDir(Bundle bundle) {
         String karafHome = System.getProperty("karaf.home"); //$NON-NLS-1$
         if (karafHome == null) {
-            throw new RuntimeException(Messages.getString("VfsBundle.SystemPropertyMissing")); //$NON-NLS-1$
+            throw new RuntimeException(messages.format("VfsBundle.SystemPropertyMissing")); //$NON-NLS-1$
         }
         File tmpDir = new File(karafHome, "data/tmp/errai-vfs/" + bundle.getBundleId()); //$NON-NLS-1$
         if (!tmpDir.exists()) {
@@ -237,14 +239,14 @@ public class VfsBundle {
     /**
      * Converts a URL to a File.  If the URL is the root URL for the bundle, then
      * this method will return a {@link File} that points to directory on the file
-     * system.  However, if the URL points to a JAR within the bundle, then this 
-     * method is responsible for figuring out which JAR is being referenced and 
+     * system.  However, if the URL points to a JAR within the bundle, then this
+     * method is responsible for figuring out which JAR is being referenced and
      * then returning a {@link File} pointing to that JAR.
-     * 
+     *
      * The approach to figuring out what the URL points to is as follows:
      * 1) Get the SHA1 hash of the MANIFEST.MF file returned via the URL
      * 2) Look up the File previously registered to that hash value
-     * 
+     *
      * @param url
      */
     public File asFile(URL url) {
@@ -254,7 +256,7 @@ public class VfsBundle {
             URL manifestURL = new URL(manifestUrl);
             manifestStream = manifestURL.openStream();
             String manifestHash = DigestUtils.shaHex(manifestStream);
-            
+
             File jarFile = index.get(manifestHash);
             if (jarFile != null) {
                 return jarFile;
@@ -264,7 +266,7 @@ public class VfsBundle {
         } finally {
             IOUtils.closeQuietly(manifestStream);
         }
-        
+
         throwNotFoundError(url);
         return null;
     }

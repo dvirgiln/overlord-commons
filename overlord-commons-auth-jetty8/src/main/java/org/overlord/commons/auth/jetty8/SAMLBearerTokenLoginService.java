@@ -36,6 +36,7 @@ import org.eclipse.jetty.server.UserIdentity;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.overlord.commons.auth.util.SAMLBearerTokenUtil;
+import org.overlord.commons.i18n.Messages;
 import org.picketlink.identity.federation.core.parsers.saml.SAMLAssertionParser;
 import org.picketlink.identity.federation.core.saml.v2.util.DocumentUtil;
 import org.picketlink.identity.federation.saml.v2.assertion.AssertionType;
@@ -53,8 +54,10 @@ import org.w3c.dom.Document;
  * @author eric.wittmann@redhat.com
  */
 public class SAMLBearerTokenLoginService extends JAASLoginService {
-    
+
     private static final Logger LOG = Log.getLogger(JAASLoginService.class);
+
+    private final static Messages messages = Messages.getInstance();
 
     private Set<String> allowedIssuers;
     private boolean signatureRequired;
@@ -68,7 +71,7 @@ public class SAMLBearerTokenLoginService extends JAASLoginService {
      */
     public SAMLBearerTokenLoginService() {
     }
-    
+
     /**
      * @see org.eclipse.jetty.plus.jaas.JAASLoginService#login(java.lang.String, java.lang.Object)
      */
@@ -98,7 +101,7 @@ public class SAMLBearerTokenLoginService extends JAASLoginService {
             if (signatureRequired) {
                 KeyPair keyPair = getKeyPair(assertion);
                 if (!SAMLBearerTokenUtil.isSAMLAssertionSignatureValid(samlAssertion, keyPair)) {
-                    throw new IOException(Messages.getString("SAMLBearerTokenLoginService.InvalidSignature")); //$NON-NLS-1$
+                    throw new IOException(messages.format("SAMLBearerTokenLoginService.InvalidSignature")); //$NON-NLS-1$
                 }
             }
             return consumeAssertion(assertion);
@@ -121,7 +124,7 @@ public class SAMLBearerTokenLoginService extends JAASLoginService {
             return SAMLBearerTokenUtil.getKeyPair(keystore, keyAlias, keyPassword);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IOException(Messages.getString("SAMLBearerTokenLoginService.FailedToGetKeyPair") + keyAlias); //$NON-NLS-1$
+            throw new IOException(messages.format("SAMLBearerTokenLoginService.FailedToGetKeyPair") + keyAlias); //$NON-NLS-1$
         }
     }
 
@@ -134,7 +137,7 @@ public class SAMLBearerTokenLoginService extends JAASLoginService {
             return SAMLBearerTokenUtil.loadKeystore(keystorePath, keystorePassword);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IOException(Messages.getString("SAMLBearerTokenLoginService.ErrorLoadingKeystore") + e.getMessage()); //$NON-NLS-1$
+            throw new IOException(messages.format("SAMLBearerTokenLoginService.ErrorLoadingKeystore") + e.getMessage()); //$NON-NLS-1$
         }
     }
 
@@ -175,14 +178,14 @@ public class SAMLBearerTokenLoginService extends JAASLoginService {
         }
         return _identityService.newUserIdentity(subject, principal, roles.toArray(new String[roles.size()]));
     }
-    
+
     /**
      * User Principal class.
      */
     private static class SAMLUserPrincipal implements Principal {
-        
+
         private final String name;
-        
+
         /**
          * Constructor.
          */

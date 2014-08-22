@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.catalina.realm.GenericPrincipal;
 import org.overlord.commons.auth.util.SAMLAssertionFactory;
 import org.overlord.commons.auth.util.SAMLBearerTokenUtil;
+import org.overlord.commons.i18n.Messages;
 
 /**
  * Class used to create SAML bearer tokens used when calling REST service
@@ -33,13 +34,15 @@ import org.overlord.commons.auth.util.SAMLBearerTokenUtil;
  * @author eric.wittmann@redhat.com
  */
 public class TomcatSAMLAssertionFactory implements SAMLAssertionFactory {
-    
+
+    private final static Messages messages = Messages.getInstance();
+
     /**
      * Constructor.
      */
     public TomcatSAMLAssertionFactory() {
     }
-    
+
     /**
      * @see org.overlord.commons.auth.util.SAMLAssertionFactory#accept()
      */
@@ -53,7 +56,7 @@ public class TomcatSAMLAssertionFactory implements SAMLAssertionFactory {
         }
         return false;
     }
-    
+
     /**
      * @see org.overlord.commons.auth.util.SAMLAssertionFactory#createSAMLAssertion(java.lang.String, java.lang.String, int)
      */
@@ -71,7 +74,7 @@ public class TomcatSAMLAssertionFactory implements SAMLAssertionFactory {
                 }
                 return SAMLBearerTokenUtil.createSAMLAssertion(principal, roles, issuerName, forService, timeValidInMillis);
             }
-            throw new Exception(Messages.getString("TomcatSAMLAssertionFactory.UnexpectedPrincipalType") + principal.getClass()); //$NON-NLS-1$
+            throw new Exception(messages.format("TomcatSAMLAssertionFactory.UnexpectedPrincipalType") + principal.getClass()); //$NON-NLS-1$
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

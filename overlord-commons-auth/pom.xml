@@ -16,6 +16,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>overlord-commons-services</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>overlord-commons-i18n</artifactId>
+    </dependency>
 
     <!-- PicketLink -->
     <dependency>

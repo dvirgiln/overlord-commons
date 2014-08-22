@@ -39,6 +39,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.tomcat.util.buf.ByteChunk;
 import org.apache.tomcat.util.buf.MessageBytes;
 import org.overlord.commons.auth.util.SAMLBearerTokenUtil;
+import org.overlord.commons.i18n.Messages;
 import org.picketlink.identity.federation.core.parsers.saml.SAMLAssertionParser;
 import org.picketlink.identity.federation.core.saml.v2.util.DocumentUtil;
 import org.picketlink.identity.federation.saml.v2.assertion.AssertionType;
@@ -50,13 +51,15 @@ import org.picketlink.identity.federation.saml.v2.assertion.SubjectType;
 import org.w3c.dom.Document;
 
 /**
- * A BASIC authenticator that handles inbound SAML Bearer Token authentication.  This 
- * authenticator assumes 
+ * A BASIC authenticator that handles inbound SAML Bearer Token authentication.  This
+ * authenticator assumes
  *
  * @author eric.wittmann@redhat.com
  */
 public class SAMLBearerTokenAuthenticator extends BasicAuthenticator {
-    
+
+    private final static Messages messages = Messages.getInstance();
+
     private Set<String> allowedIssuers;
     private boolean signatureRequired;
     private String keystorePath;
@@ -69,7 +72,7 @@ public class SAMLBearerTokenAuthenticator extends BasicAuthenticator {
      */
     public SAMLBearerTokenAuthenticator() {
     }
-    
+
     /**
      * @see org.apache.catalina.authenticator.BasicAuthenticator#authenticate(org.apache.catalina.connector.Request, javax.servlet.http.HttpServletResponse, org.apache.catalina.deploy.LoginConfig)
      */
@@ -100,7 +103,7 @@ public class SAMLBearerTokenAuthenticator extends BasicAuthenticator {
                             if (signatureRequired) {
                                 KeyPair keyPair = getKeyPair(assertion);
                                 if (!SAMLBearerTokenUtil.isSAMLAssertionSignatureValid(samlAssertion, keyPair)) {
-                                    throw new IOException(Messages.getString("SAMLBearerTokenAuthenticator.InvalidSignature")); //$NON-NLS-1$
+                                    throw new IOException(messages.format("SAMLBearerTokenAuthenticator.InvalidSignature")); //$NON-NLS-1$
                                 }
                             }
                             principal = consumeAssertion(assertion);
@@ -133,7 +136,7 @@ public class SAMLBearerTokenAuthenticator extends BasicAuthenticator {
             return SAMLBearerTokenUtil.getKeyPair(keystore, keyAlias, keyPassword);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IOException(Messages.getString("SAMLBearerTokenAuthenticator.FailedToGetKeyPair") + keyAlias); //$NON-NLS-1$
+            throw new IOException(messages.format("SAMLBearerTokenAuthenticator.FailedToGetKeyPair") + keyAlias); //$NON-NLS-1$
         }
     }
 
@@ -146,7 +149,7 @@ public class SAMLBearerTokenAuthenticator extends BasicAuthenticator {
             return SAMLBearerTokenUtil.loadKeystore(keystorePath, keystorePassword);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IOException(Messages.getString("SAMLBearerTokenAuthenticator.ErrorLoadingKeystore") + e.getMessage()); //$NON-NLS-1$
+            throw new IOException(messages.format("SAMLBearerTokenAuthenticator.ErrorLoadingKeystore") + e.getMessage()); //$NON-NLS-1$
         }
     }
 
@@ -288,7 +291,7 @@ public class SAMLBearerTokenAuthenticator extends BasicAuthenticator {
         keyPassword = interpolate(keyPassword);
         this.keyPassword = keyPassword;
     }
-    
+
     /**
      * Do system property interpolation.
      * @param value

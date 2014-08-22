@@ -23,16 +23,18 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.overlord.commons.auth.Messages;
 import org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter;
+import org.overlord.commons.i18n.Messages;
 import org.picketlink.identity.federation.web.constants.GeneralConstants;
 
 /**
- * A SAML assertion factory that works with a simple filter-based 
+ * A SAML assertion factory that works with a simple filter-based
  * PicketLink SP app.
  */
 public class StandardSAMLAssertionFactory implements SAMLAssertionFactory {
-    
+
+    private final static Messages messages = Messages.getInstance();
+
     /**
      * C'tor.
      */
@@ -60,7 +62,7 @@ public class StandardSAMLAssertionFactory implements SAMLAssertionFactory {
     public String createSAMLAssertion(String issuerName, String forService, int timeValidInMillis) {
         HttpServletRequest request = HttpRequestThreadLocalFilter.TL_request.get();
         if (request == null) {
-            throw new RuntimeException(Messages.format("StandardSAMLAssertionFactory.MissingRequest")); //$NON-NLS-1$
+            throw new RuntimeException(messages.format("StandardSAMLAssertionFactory.MissingRequest")); //$NON-NLS-1$
         }
         HttpSession session = request.getSession();
         Principal principal = (Principal) session.getAttribute(GeneralConstants.PRINCIPAL_ID);

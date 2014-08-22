@@ -35,7 +35,7 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.overlord.commons.auth.Messages;
+import org.overlord.commons.i18n.Messages;
 import org.picketlink.identity.federation.api.saml.v2.sig.SAML2Signature;
 import org.picketlink.identity.federation.core.saml.v2.factories.SAMLAssertionFactory;
 import org.picketlink.identity.federation.core.saml.v2.util.AssertionUtil;
@@ -60,14 +60,16 @@ import org.w3c.dom.Document;
  */
 public class SAMLBearerTokenUtil {
 
+    private final static Messages messages = Messages.getInstance();
+
     /**
      * Creates a SAML Assertion that can be used as a bearer token when invoking REST
      * services.  The REST service must be configured to accept SAML Assertion bearer
      * tokens.
-     * 
+     *
      * In JBoss this means protecting the REST services with {@link org.overlord.commons.auth.jboss7.SAMLBearerTokenLoginModule}.
      * In Tomcat7 this means protecting the REST services with {@link org.overlord.commons.auth.tomcat7.SAMLBearerTokenAuthenticator}.
-     * 
+     *
      * @param principal the authenticated principal
      * @param roles the authenticated principal's roles
      * @param issuerName the issuer name (typically the context of the calling web app)
@@ -81,10 +83,10 @@ public class SAMLBearerTokenUtil {
      * Creates a SAML Assertion that can be used as a bearer token when invoking REST
      * services.  The REST service must be configured to accept SAML Assertion bearer
      * tokens.
-     * 
+     *
      * In JBoss this means protecting the REST services with {@link org.overlord.commons.auth.jboss7.SAMLBearerTokenLoginModule}.
      * In Tomcat7 this means protecting the REST services with {@link org.overlord.commons.auth.tomcat7.SAMLBearerTokenAuthenticator}.
-     * 
+     *
      * @param principal
      * @param roles
      * @param issuerName
@@ -120,7 +122,7 @@ public class SAMLBearerTokenUtil {
         ASTChoiceType attributeAST = new ASTChoiceType(attribute);
         AttributeStatementType roleStatement = new AttributeStatementType();
         roleStatement.addAttribute(attributeAST);
-        
+
         if (roles != null) {
             for (String role : roles) {
                 attribute.addAttributeValue(role);
@@ -165,10 +167,10 @@ public class SAMLBearerTokenUtil {
                 PublicKey publicKey = cert.getPublicKey();
                 return new KeyPair(publicKey, (PrivateKey) key);
             }
-            throw new Exception(Messages.format("SAMLBearerTokenUtil.FailedToGetKeyPair.IncorrectKeyType", keyAlias)); //$NON-NLS-1$
+            throw new Exception(messages.format("SAMLBearerTokenUtil.FailedToGetKeyPair.IncorrectKeyType", keyAlias)); //$NON-NLS-1$
         } catch (Exception e) {
             e.printStackTrace();
-            throw new Exception(Messages.format("SAMLBearerTokenUtil.FailedToGetKeyPair.Alias", keyAlias)); //$NON-NLS-1$
+            throw new Exception(messages.format("SAMLBearerTokenUtil.FailedToGetKeyPair.Alias", keyAlias)); //$NON-NLS-1$
         }
     }
 
@@ -181,7 +183,7 @@ public class SAMLBearerTokenUtil {
     public static KeyStore loadKeystore(String keystorePath, String keystorePassword) throws Exception {
         File keystoreFile = new File(keystorePath);
         if (!keystoreFile.isFile()) {
-            throw new Exception(Messages.format("SAMLBearerTokenUtil.NoKeystore", keystorePath)); //$NON-NLS-1$
+            throw new Exception(messages.format("SAMLBearerTokenUtil.NoKeystore", keystorePath)); //$NON-NLS-1$
         }
         KeyStore keystore = KeyStore.getInstance("jks"); //$NON-NLS-1$
         InputStream is = null;
@@ -193,7 +195,7 @@ public class SAMLBearerTokenUtil {
             if (is != null) { try { is.close(); } catch (Exception e) {} }
         }
     }
-    
+
     /**
      * Validates that the assertion is acceptable based on configurable criteria.
      * @param assertion
@@ -206,14 +208,14 @@ public class SAMLBearerTokenUtil {
         // Possibly fail the assertion based on issuer.
         String issuer = assertion.getIssuer().getValue();
         if (allowedIssuers != null && !allowedIssuers.contains(issuer)) {
-            throw new LoginException(Messages.format("SAMLBearerTokenUtil.BadIssuer", issuer, allowedIssuers.toString())); //$NON-NLS-1$
+            throw new LoginException(messages.format("SAMLBearerTokenUtil.BadIssuer", issuer, allowedIssuers.toString())); //$NON-NLS-1$
         }
 
         // Possibly fail the assertion based on audience restriction
         String currentAudience = request.getContextPath();
         Set<String> audienceRestrictions = getAudienceRestrictions(assertion);
         if (!audienceRestrictions.contains(currentAudience)) {
-            throw new LoginException(Messages.format("SAMLBearerTokenUtil.InvalidAudienceRestrictions", currentAudience)); //$NON-NLS-1$
+            throw new LoginException(messages.format("SAMLBearerTokenUtil.InvalidAudienceRestrictions", currentAudience)); //$NON-NLS-1$
         }
 
         // Possibly fail the assertion based on time.
@@ -224,12 +226,12 @@ public class SAMLBearerTokenUtil {
                 XMLGregorianCalendar notBefore = conditionsType.getNotBefore();
                 XMLGregorianCalendar notOnOrAfter = conditionsType.getNotOnOrAfter();
                 if (!XMLTimeUtil.isValid(now, notBefore, notOnOrAfter)) {
-                    String msg = Messages.format("SAMLBearerTokenUtil.AssertionExpired", now.toXMLFormat(), //$NON-NLS-1$
+                    String msg = messages.format("SAMLBearerTokenUtil.AssertionExpired", now.toXMLFormat(), //$NON-NLS-1$
                             notBefore.toXMLFormat(), notOnOrAfter);
                     throw new LoginException(msg);
                 }
             } else {
-                throw new LoginException(Messages.getString("SAMLBearerTokenUtil.InvalidAssertion")); //$NON-NLS-1$
+                throw new LoginException(messages.format("SAMLBearerTokenUtil.InvalidAssertion")); //$NON-NLS-1$
             }
         // Note: Do not explicitly catch Picketlink's ConfigurationException.  It was refactored between 2.1.x (EAP 6.1)
         // and 2.5.x (EAP 6.3).  To maintain compatibility with both, leave it  out.

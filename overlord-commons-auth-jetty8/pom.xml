@@ -92,6 +92,7 @@
               org.picketlink.identity.federation.core.parsers.saml,
               org.picketlink.identity.federation.core.saml.v2.util, 
               org.picketlink.identity.federation.saml.v2.assertion, 
+              org.overlord.commons.i18n,
               org.osgi.framework,
               org.w3c.dom
             </Import-Package>

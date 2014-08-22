@@ -9,6 +9,10 @@
   <name>Overlord Commons: Karaf commands</name>
   <packaging>bundle</packaging>
   <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>overlord-commons-i18n</artifactId>
+    </dependency>  
  	<dependency>
  		<groupId>org.apache.karaf.shell</groupId>
     	<artifactId>org.apache.karaf.shell.console</artifactId>

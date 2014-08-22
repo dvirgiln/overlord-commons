@@ -41,8 +41,8 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.commons.codec.binary.Base64;
-import org.overlord.commons.auth.Messages;
 import org.overlord.commons.auth.util.SAMLBearerTokenUtil;
+import org.overlord.commons.i18n.Messages;
 import org.picketlink.identity.federation.core.parsers.saml.SAMLAssertionParser;
 import org.picketlink.identity.federation.core.saml.v2.util.DocumentUtil;
 import org.picketlink.identity.federation.saml.v2.assertion.AssertionType;
@@ -56,18 +56,20 @@ import org.w3c.dom.Document;
 /**
  * A filter that supports both BASIC authentication and custom SAML Bearer Token
  * authentication.  Can be extended by platform-specific implementations to handle
- * the actual user/pass login.  However, the default implementation uses 
+ * the actual user/pass login.  However, the default implementation uses
  * httpRequest.login() to delegate to container managed auth.  Hopefully that
  * will be good enough for *most* platforms.
  *
  * @author eric.wittmann@redhat.com
  */
 public class SamlBearerTokenAuthFilter implements Filter {
-    
+
     public static final ThreadLocal<SimplePrincipal> TL_principal = new ThreadLocal<SimplePrincipal>();
 
     // Indicates that the request has been logged in and does not need to be wrapped.
     private static final SimplePrincipal NO_PROXY = new SimplePrincipal(null);
+
+    private final static Messages messages = Messages.getInstance();
 
     private String realm;
     private Set<String> allowedIssuers;
@@ -95,7 +97,7 @@ public class SamlBearerTokenAuthFilter implements Filter {
         } else {
             realm = defaultRealm();
         }
-        
+
         // Allowed issuers
         parameter = config.getInitParameter("allowedIssuers"); //$NON-NLS-1$
         if (parameter != null && parameter.trim().length() > 0) {
@@ -214,7 +216,7 @@ public class SamlBearerTokenAuthFilter implements Filter {
             sendAuthResponse((HttpServletResponse)response);
             return;
         }
-        
+
         SimplePrincipal principal = login(credentials, req, (HttpServletResponse) response);
         if (principal != null) {
             doFilterChain(request, response, chain, principal);
@@ -297,7 +299,7 @@ public class SamlBearerTokenAuthFilter implements Filter {
      * @param credentials
      * @param request
      * @param response
-     * @throws IOException 
+     * @throws IOException
      */
     protected SimplePrincipal login(Creds credentials, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -313,7 +315,7 @@ public class SamlBearerTokenAuthFilter implements Filter {
      * encoded SAML assertion.
      * @param assertionData
      * @param request
-     * @throws IOException 
+     * @throws IOException
      */
     protected SimplePrincipal doSamlLogin(String assertionData, HttpServletRequest request) throws IOException {
         try {
@@ -326,7 +328,7 @@ public class SamlBearerTokenAuthFilter implements Filter {
             if (signatureRequired) {
                 KeyPair keyPair = getKeyPair(assertion);
                 if (!SAMLBearerTokenUtil.isSAMLAssertionSignatureValid(samlAssertion, keyPair)) {
-                    throw new IOException(Messages.getString("SamlBearerTokenAuthFilter.InvalidSig")); //$NON-NLS-1$
+                    throw new IOException(messages.format("SamlBearerTokenAuthFilter.InvalidSig")); //$NON-NLS-1$
                 }
             }
             return consumeAssertion(assertion);
@@ -349,7 +351,7 @@ public class SamlBearerTokenAuthFilter implements Filter {
             return SAMLBearerTokenUtil.getKeyPair(keystore, keyAlias, keyPassword);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IOException(Messages.getString("SamlBearerTokenAuthFilter.FailedToGetKeyPair") + keyAlias); //$NON-NLS-1$
+            throw new IOException(messages.format("SamlBearerTokenAuthFilter.FailedToGetKeyPair") + keyAlias); //$NON-NLS-1$
         }
     }
 
@@ -362,7 +364,7 @@ public class SamlBearerTokenAuthFilter implements Filter {
             return SAMLBearerTokenUtil.loadKeystore(keystorePath, keystorePassword);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IOException(Messages.getString("SamlBearerTokenAuthFilter.ErrorLoadingKeystore") + e.getMessage()); //$NON-NLS-1$
+            throw new IOException(messages.format("SamlBearerTokenAuthFilter.ErrorLoadingKeystore") + e.getMessage()); //$NON-NLS-1$
         }
     }
 
@@ -395,7 +397,7 @@ public class SamlBearerTokenAuthFilter implements Filter {
                 }
             }
         }
-        
+
         TL_principal.set(identity);
 
         return identity;
@@ -406,7 +408,7 @@ public class SamlBearerTokenAuthFilter implements Filter {
      * method if {@link HttpServletRequest#login(String, String)} is not sufficient.
      * @param username
      * @param password
-     * @param request 
+     * @param request
      * @throws IOException
      */
     protected SimplePrincipal doBasicLogin(String username, String password, HttpServletRequest request) throws IOException {
@@ -421,7 +423,7 @@ public class SamlBearerTokenAuthFilter implements Filter {
     /**
      * Sends a response that tells the client that authentication is required.
      * @param response
-     * @throws IOException 
+     * @throws IOException
      */
     private void sendAuthResponse(HttpServletResponse response) throws IOException {
         response.setHeader("WWW-Authenticate", String.format("BASIC realm=\"%1$s\"", realm)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -434,7 +436,7 @@ public class SamlBearerTokenAuthFilter implements Filter {
     @Override
     public void destroy() {
     }
-    
+
     /**
      * Models inbound basic auth credentials (user/password).
      * @author eric.wittmann@redhat.com
@@ -442,7 +444,7 @@ public class SamlBearerTokenAuthFilter implements Filter {
     protected static class Creds {
         public String username;
         public String password;
-        
+
         /**
          * Constructor.
          */

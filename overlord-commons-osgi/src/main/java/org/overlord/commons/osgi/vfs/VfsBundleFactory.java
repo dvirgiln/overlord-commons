@@ -24,6 +24,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+import org.overlord.commons.i18n.Messages;
 
 /**
  * Implementation of the vfs bundle factory interface.
@@ -34,6 +35,8 @@ import org.osgi.framework.FrameworkUtil;
 @Component(name = "The Vfs Bundle Factory", immediate = true)
 @Service(value = org.overlord.commons.osgi.vfs.IVfsBundleFactory.class)
 public class VfsBundleFactory implements IVfsBundleFactory {
+
+    private final static Messages messages = Messages.getInstance();
 
     private final Map<Long, VfsBundle> vfsBundleCache = new HashMap<Long, VfsBundle>();
 
@@ -61,7 +64,7 @@ public class VfsBundleFactory implements IVfsBundleFactory {
 
         // Shouldn't happen, but throw a runtime exception if it does.
         if (theBundle == null) {
-            throw new RuntimeException(Messages.getString("VfsBundleFactory.BundleNotFound") + url); //$NON-NLS-1$
+            throw new RuntimeException(messages.format("VfsBundleFactory.BundleNotFound") + url); //$NON-NLS-1$
         }
 
         VfsBundle vfsBundle = vfsBundleCache.get(bundleId);

@@ -26,7 +26,10 @@
       <artifactId>commons-codec</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>overlord-commons-i18n</artifactId>
+    </dependency>
     <!-- Declarative Service Annotations -->
     <dependency>
 	  <groupId>org.apache.felix</groupId>
@@ -52,6 +55,7 @@
               javax.servlet,
               org.osgi.framework,
               org.apache.commons.codec.digest,
+              org.overlord.commons.i18n,
               org.apache.commons.io
             </Import-Package>
           </instructions>

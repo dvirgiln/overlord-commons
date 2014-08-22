@@ -34,7 +34,7 @@ import javax.security.auth.x500.X500Principal;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
-import org.overlord.commons.karaf.commands.i18n.Messages;
+import org.overlord.commons.i18n.Messages;
 
 /**
  * Saml Keystore generator util. It generates a keystore file based on a
@@ -45,6 +45,8 @@ import org.overlord.commons.karaf.commands.i18n.Messages;
  * @author David Virgil Naranjo
  */
 public class GenerateSamlKeystoreUtil {
+
+    private final static Messages messages = Messages.getInstance();
 
     private final static int validity = 90;
     private char[] keyPass = null;
@@ -147,7 +149,7 @@ public class GenerateSamlKeystoreUtil {
         }
 
         if (keyStore.containsAlias(alias)) {
-            throw new Exception(Messages.getString("Key.pair.not.generated.alias.alias.already.exists")); //$NON-NLS-1$
+            throw new Exception(messages.format("Key.pair.not.generated.alias.alias.already.exists")); //$NON-NLS-1$
         }
 
         if (sigAlgName == null) {
@@ -209,7 +211,7 @@ public class GenerateSamlKeystoreUtil {
         } else if ("EC".equalsIgnoreCase(keyAlgName)) { //$NON-NLS-1$
             return "SHA256withECDSA"; //$NON-NLS-1$
         } else {
-            throw new Exception(Messages.getString("Cannot.derive.signature.algorithm")); //$NON-NLS-1$
+            throw new Exception(messages.format("Cannot.derive.signature.algorithm")); //$NON-NLS-1$
         }
     }
 

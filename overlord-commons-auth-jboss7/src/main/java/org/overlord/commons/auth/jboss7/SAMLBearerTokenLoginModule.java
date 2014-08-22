@@ -39,6 +39,7 @@ import org.jboss.security.SimpleGroup;
 import org.jboss.security.auth.spi.AbstractServerLoginModule;
 import org.overlord.commons.auth.tomcat7.HttpRequestThreadLocalValve;
 import org.overlord.commons.auth.util.SAMLBearerTokenUtil;
+import org.overlord.commons.i18n.Messages;
 import org.picketlink.identity.federation.core.parsers.saml.SAMLAssertionParser;
 import org.picketlink.identity.federation.core.saml.v2.util.DocumentUtil;
 import org.picketlink.identity.federation.saml.v2.assertion.AssertionType;
@@ -70,9 +71,11 @@ import org.w3c.dom.Document;
  * @author eric.wittmann@redhat.com
  */
 public class SAMLBearerTokenLoginModule extends AbstractServerLoginModule {
-    
+
+    private final static Messages messages = Messages.getInstance();
+
     /** Configured in standalone.xml in the login module */
-    private Set<String> allowedIssuers = new HashSet<String>();
+    private final Set<String> allowedIssuers = new HashSet<String>();
     private String signatureRequired;
     private String keystorePath;
     private String keystorePassword;
@@ -80,7 +83,7 @@ public class SAMLBearerTokenLoginModule extends AbstractServerLoginModule {
     private String keyPassword;
 
     private Principal identity;
-    private Set<String> roles = new HashSet<String>();
+    private final Set<String> roles = new HashSet<String>();
 
     /**
      * Constructor.
@@ -134,7 +137,7 @@ public class SAMLBearerTokenLoginModule extends AbstractServerLoginModule {
                     if ("true".equals(signatureRequired)) { //$NON-NLS-1$
                         KeyPair keyPair = getKeyPair(assertion);
                         if (!SAMLBearerTokenUtil.isSAMLAssertionSignatureValid(samlAssertion, keyPair)) {
-                            throw new LoginException(Messages.getString("SAMLBearerTokenLoginModule.InvalidSignature")); //$NON-NLS-1$
+                            throw new LoginException(messages.format("SAMLBearerTokenLoginModule.InvalidSignature")); //$NON-NLS-1$
                         }
                     }
                     consumeAssertion(assertion);
@@ -183,7 +186,7 @@ public class SAMLBearerTokenLoginModule extends AbstractServerLoginModule {
             return SAMLBearerTokenUtil.getKeyPair(keystore, keyAlias, keyPassword);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new LoginException(Messages.getString("SAMLBearerTokenLoginModule.FailedToGetKeyPair") + keyAlias); //$NON-NLS-1$
+            throw new LoginException(messages.format("SAMLBearerTokenLoginModule.FailedToGetKeyPair") + keyAlias); //$NON-NLS-1$
         }
     }
 
@@ -250,7 +253,7 @@ public class SAMLBearerTokenLoginModule extends AbstractServerLoginModule {
                 groups[0].addMember(createIdentity(role));
             }
         } catch (Exception e) {
-            throw new LoginException(Messages.getString("SAMLBearerTokenLoginModule.FailedToCreateGroupPrincipal") + e.getMessage()); //$NON-NLS-1$
+            throw new LoginException(messages.format("SAMLBearerTokenLoginModule.FailedToCreateGroupPrincipal") + e.getMessage()); //$NON-NLS-1$
         }
         return groups;
     }

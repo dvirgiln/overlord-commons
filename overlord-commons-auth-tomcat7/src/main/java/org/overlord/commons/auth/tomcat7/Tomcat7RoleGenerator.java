@@ -28,12 +28,14 @@ import org.apache.catalina.Role;
 import org.apache.catalina.User;
 import org.apache.catalina.realm.GenericPrincipal;
 import org.overlord.commons.auth.util.IRoleGenerator;
+import org.overlord.commons.i18n.Messages;
 
 /**
  * A role generator that works when the runtime is Tomcat 7.
  */
 public class Tomcat7RoleGenerator implements IRoleGenerator {
 
+    private final static Messages messages = Messages.getInstance();
     /**
      * C'tor.
      */
@@ -78,8 +80,7 @@ public class Tomcat7RoleGenerator implements IRoleGenerator {
                 }
                 return roles;
             }
-            throw new Exception(
-                    Messages.getString("TomcatSAMLAssertionFactory.UnexpectedPrincipalType") + principal.getClass()); //$NON-NLS-1$
+            throw new Exception(messages.format("TomcatSAMLAssertionFactory.UnexpectedPrincipalType") + principal.getClass()); //$NON-NLS-1$
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

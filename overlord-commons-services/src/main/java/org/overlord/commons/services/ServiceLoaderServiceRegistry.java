@@ -23,6 +23,7 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+
 /**
  * Implements a service registry by using the standard java {@link ServiceLoader}
  * mechanism.
@@ -30,9 +31,10 @@ import java.util.Set;
  * @author eric.wittmann@redhat.com
  */
 public class ServiceLoaderServiceRegistry extends AbstractServiceRegistry {
-    
-    private Map<Class<?>, Set<?>> servicesCache = new HashMap<Class<?>, Set<?>>();
-    private Map<Class<?>, Object> serviceCache = new HashMap<Class<?>, Object>();
+
+
+    private final Map<Class<?>, Set<?>> servicesCache = new HashMap<Class<?>, Set<?>>();
+    private final Map<Class<?>, Object> serviceCache = new HashMap<Class<?>, Object>();
 
     /**
      * @see org.overlord.commons.services.ServiceRegistry#getSingleService(java.lang.Class)
@@ -43,18 +45,18 @@ public class ServiceLoaderServiceRegistry extends AbstractServiceRegistry {
         synchronized (serviceCache) {
             if (serviceCache.containsKey(serviceInterface))
                 return (T) serviceCache.get(serviceInterface);
-    
+
             // Cached single service values are derived from the values cached when checking
             // for multiple services
             T rval = null;
             Set<T> services=getServices(serviceInterface);
-            
+
             if (services.size() > 1) {
-                throw new IllegalStateException(Messages.getString("ServiceLoaderServiceRegistry.MultipleImplsFound") + serviceInterface); //$NON-NLS-1$
+                throw new IllegalStateException(Messages.format("ServiceLoaderServiceRegistry.MultipleImplsFound") + serviceInterface); //$NON-NLS-1$
             } else if (!services.isEmpty()) {
                 rval = services.iterator().next();
             }
-    
+
             serviceCache.put(serviceInterface, rval);
             return rval;
         }
@@ -69,7 +71,7 @@ public class ServiceLoaderServiceRegistry extends AbstractServiceRegistry {
         synchronized(servicesCache) {
             if (servicesCache.containsKey(serviceInterface))
                 return (Set<T>) servicesCache.get(serviceInterface);
-    
+
             Set<T> services = new LinkedHashSet<T>();
             try {
                 for (T service : ServiceLoader.load(serviceInterface)) {

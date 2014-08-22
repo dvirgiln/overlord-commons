@@ -82,6 +82,11 @@
     <copy file="${overlord-commons.auth.jboss7.file}"
           tofile="${overlord-commons.appserver.dir}/modules/org/overlord/commons/overlord-commons-auth-tool/main/overlord-commons-auth-jboss7-${version.org.overlord.overlord-commons}.jar" overwrite="false" />
 
+  	<copy file="${overlord-commons.services.jar}"
+  	  	          tofile="${overlord-commons.appserver.dir}/modules/org/overlord/commons/overlord-commons-auth-tool/main/overlord-commons-services-${version.org.overlord.overlord-commons}.jar" overwrite="false" />
+  	
+  	 <copy file="${overlord-commons.i18n.jar}"
+  	          tofile="${overlord-commons.appserver.dir}/modules/org/overlord/commons/overlord-commons-auth-tool/main/overlord-commons-i18n-${version.org.overlord.overlord-commons}.jar" overwrite="false" />	
     <antcall target="install-jboss" />
   </target>
 
@@ -106,11 +111,15 @@
     <genkey keystore="${overlord-commons.jboss.config.dir}/overlord-saml.keystore" storepass="${overlord-commons.saml-keystore.password}"
             keyalg="RSA" keysize="2048" alias="overlord" storetype="jks" keypass="${overlord-commons.overlord-alias.password}"
             dname="CN=Overlord, OU=JBoss, O=RedHat, L=Westford, ST=Mass, C=US"/>
-
+	<echo message="overlord-commons.i18n.jar=${overlord-commons.i18n.jar}"></echo>
     <!-- Store SAML signature keystore password in vault -->
-    <java jar="${overlord-commons.appserver.dir}/jboss-modules.jar"
+  	<path id="overlord-commons-i18n">
+  	    <fileset  file="${overlord-commons.i18n.jar}"/>
+  	</path>
+  	
+  	<java jar="${overlord-commons.appserver.dir}/jboss-modules.jar"
           fork="true" dir="${overlord-commons.appserver.dir}"
-          failonerror="true" maxmemory="128m">
+          failonerror="true" maxmemory="128m" classpathref="overlord-commons-i18n">
       <arg value="-mp"/>
       <arg value="${overlord-commons.jboss.module-path}"/>
       <arg value="org.overlord.commons.overlord-commons-auth-tool"/>
@@ -145,7 +154,7 @@
     <!-- Store overlord saml keypair alias password in vault -->
     <java jar="${overlord-commons.appserver.dir}/jboss-modules.jar"
           fork="true" dir="${overlord-commons.appserver.dir}"
-          failonerror="true" maxmemory="128m">
+          failonerror="true" maxmemory="128m" classpathref="overlord-commons-i18n">
       <arg value="-mp"/>
       <arg value="${overlord-commons.jboss.module-path}"/>
       <arg value="org.overlord.commons.overlord-commons-auth-tool"/>
@@ -171,7 +180,7 @@
       <arg value="-propertyfile"/>
       <arg value="${overlord-commons.tmp.file}"/>
       <arg value="-property"/>
-      <arg value="overlord-commons.overlord-alias.password.hash"/>
+      <arg value="overlord-commons.overlord-alias.password.hash"/>  	
     </java>
     <property file="${overlord-commons.tmp.file}" />
     <delete file="${overlord-commons.tmp.file}" />
