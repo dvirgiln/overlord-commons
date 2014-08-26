@@ -23,9 +23,7 @@ public class Messages extends AbstractMessages {
         messages = new HashMap<String, Messages>();
         Set<MessagesPathProvider> providers = ServiceRegistryUtil.getServices(MessagesPathProvider.class);
         for (MessagesPathProvider provider : providers) {
-            for (String messagesPath : provider.getMessagesPaths()) {
-                messages.put(messagesPath, new Messages(messagesPath));
-            }
+            addPathProvider(provider);
         }
     }
 
@@ -77,6 +75,15 @@ public class Messages extends AbstractMessages {
     static class MySecurityManager extends SecurityManager {
         public String getCallerClassName(int callStackDepth) {
             return getClassContext()[callStackDepth].getName();
+        }
+    }
+
+    public static void addPathProvider(MessagesPathProvider provider) {
+        for (String messagesPath : provider.getMessagesPaths()) {
+            if (!messages.containsKey(messagesPath)) {
+                messages.put(messagesPath, new Messages(messagesPath));
+            }
+
         }
     }
 }
