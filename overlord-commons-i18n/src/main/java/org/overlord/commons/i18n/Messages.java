@@ -4,10 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.overlord.commons.services.ServiceRegistryUtil;
 
+@Component(name = "Messages", immediate = false)
+@Service(value = org.overlord.commons.i18n.Messages.class)
 public class Messages extends AbstractMessages {
 
+    public Messages() {
+
+    }
     private static Map<String, Messages> messages;
 
     private final static MySecurityManager mySecurityManager = new MySecurityManager();

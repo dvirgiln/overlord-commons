@@ -3,6 +3,11 @@ package org.overlord.commons.i18n;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
+
+@Component(name = "Overlord Commons Path Provider", immediate = true)
+@Service(value = org.overlord.commons.i18n.MessagesPathProvider.class)
 public class OverlordCommonsMessagesPathProvider implements MessagesPathProvider {
 
     @Override

@@ -18,7 +18,12 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-services</artifactId>
-    </dependency>    
+    </dependency>  
+    <!-- Declarative Service Annotations -->
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.scr.annotations</artifactId>
+    </dependency>        
   </dependencies>
 
   <build>

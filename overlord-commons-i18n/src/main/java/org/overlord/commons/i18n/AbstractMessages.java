@@ -15,6 +15,7 @@
  */
 package org.overlord.commons.i18n;
 
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,6 +55,9 @@ public class AbstractMessages {
         clazz = c;
     }
 
+    public AbstractMessages() {
+
+    }
     /**
      * Constructor.
      */
@@ -103,7 +107,10 @@ public class AbstractMessages {
                         }
                     });
         } else {
-            return PropertyResourceBundle.getBundle(pkg + ".messages", locale, new ResourceBundle.Control() { //$NON-NLS-1$
+            URL url[] = new URL[1];
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+            return PropertyResourceBundle.getBundle(pkg + ".messages", locale, classLoader, new ResourceBundle.Control() { //$NON-NLS-1$
                         @Override
                         public List<String> getFormats(String baseName) {
                             return FORMATS;
