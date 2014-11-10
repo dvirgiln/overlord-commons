@@ -9,7 +9,9 @@
   <artifactId>overlord-commons-uiheader</artifactId>
   <packaging>bundle</packaging>
   <name>Overlord Commons: UI Header</name>
-
+	<properties>
+		<maven.test.skip>true</maven.test.skip>
+	</properties>
   <dependencies>
     <!-- Overlord Commons Config -->
     <dependency>

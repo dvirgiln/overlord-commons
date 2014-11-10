@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.overlord</groupId>
+    <artifactId>overlord-commons</artifactId>
+    <version>2.0.12-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <artifactId>overlord-commons-resteasy-service-eap</artifactId>
+  <packaging>bundle</packaging>
+  <name>Overlord Commons Resteasy service eap</name>
+  <description>Overlord COmmons API related shared code.</description>
+
+  <properties>
+    <version.resteasy>2.3.8.Final-redhat-3</version.resteasy>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+	 <!-- RESTEasy -->
+	    <dependency>
+	      <groupId>org.jboss.resteasy</groupId>
+	      <artifactId>resteasy-jaxrs</artifactId>
+	      <version>${version.resteasy}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.jboss.resteasy</groupId>
+	      <artifactId>resteasy-atom-provider</artifactId>
+	      <version>${version.resteasy}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.jboss.resteasy</groupId>
+	      <artifactId>resteasy-jaxb-provider</artifactId>
+	      <version>${version.resteasy}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.jboss.resteasy</groupId>
+	      <artifactId>resteasy-multipart-provider</artifactId>
+	      <version>${version.resteasy}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.jboss.resteasy</groupId>
+	      <artifactId>jaxrs-api</artifactId>
+	      <version>${version.resteasy}</version>
+	    </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.jboss.resteasy</groupId>
+     <artifactId>resteasy-jaxrs</artifactId>
+    </dependency>    
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-resteasy-service</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
